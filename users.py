@@ -50,6 +50,21 @@ def request_user_data():
 
         return True
 
+    def valid_birthdate(birthdate):
+        # делим полученную стороку по точке, должно получиться 3 куска:
+        birthdate_splitted = birthdate.split(".")
+        if len(birthdate_splitted) != 3:
+            return False
+
+        # проверяем куски: числа ли это?
+        for chunk in birthdate_splitted:
+            try:
+                number = int(chunk)
+            except ValueError:
+                return False
+
+        return True 
+
     first_name = input("Your first name: ")
     last_name = input("Your last name: ")
     gender = input("Your gender: ")
@@ -59,7 +74,10 @@ def request_user_data():
         email = input("Incorrect email! Your email: ")
 
     birthdate = input("Your birthdate(dd.mm.year): ")
+    while not valid_birthdate(birthdate):
+        birthdate = input("Incorrect birthdate! Your birthdate(dd.mm.year): ")
 
+    # проверка ввода роста:
     while True:
         try:
             height = float(input("Your height: "))
