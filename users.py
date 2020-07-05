@@ -59,7 +59,13 @@ def request_user_data():
         email = input("Incorrect email! Your email: ")
 
     birthdate = input("Your birthdate(dd.mm.year): ")
-    height = input("Your height: ")
+
+    while True:
+        try:
+            height = float(input("Your height: "))
+            break
+        except ValueError as er:
+            print("Incorrect value!", er)
 
     user = User(
         first_name=first_name,
