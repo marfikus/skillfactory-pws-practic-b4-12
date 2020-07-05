@@ -51,8 +51,8 @@ def request_user_data():
         return True
 
     def valid_birthdate(birthdate):
-        # делим полученную стороку по точке, должно получиться 3 куска:
-        birthdate_splitted = birthdate.split(".")
+        # делим полученную строку, должно получиться 3 куска:
+        birthdate_splitted = birthdate.split("-")
         if len(birthdate_splitted) != 3:
             return False
 
@@ -73,9 +73,9 @@ def request_user_data():
     while not valid_email(email):
         email = input("Incorrect email! Your email: ")
 
-    birthdate = input("Your birthdate(dd.mm.year): ")
+    birthdate = input("Your birthdate(dd-mm-year): ")
     while not valid_birthdate(birthdate):
-        birthdate = input("Incorrect birthdate! Your birthdate(dd.mm.year): ")
+        birthdate = input("Incorrect birthdate! Your birthdate(dd-mm-year): ")
 
     # проверка ввода роста:
     while True:
