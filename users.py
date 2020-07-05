@@ -28,3 +28,50 @@ def connect_db():
     session = Sessions()
     return session
 
+def request_user_data():
+    def valid_email(email):
+        # делим по собаке, должно получиться 2 куска, если нормальный емейл:
+        email_splitted = email.split("@")
+        if len(email_splitted) != 2:
+            return False
+        
+        # отсекаем ситуацию, когда собака в начале или конце:
+        name, domain = email_splitted
+        if (len(name) == 0) or (len(domain) == 0):
+            return False
+
+        # наличие точки в домене:
+        if not "." in domain:
+            return False
+
+        # и также отсекаем ситуацию, когда точка в начале или в конце:
+        if (domain[0] == ".") or (domain[-1] == "."):
+            return False
+
+        return True
+
+
+    first_name = input("Your first name: ")
+    last_name = input("Your last name: ")
+    gender = input("Your gender: ")
+
+    email = input("Your email: ")
+    while not valid_email(email):
+        email = input("Incorrect email! Your email: ")
+
+    birthdate = input("Your birthdate(dd.mm.year): ")
+    height = input("Your height: ")
+
+    # user_id = str(uuid.uuid4())
+
+    user = User(
+        # id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+        gender=gender,
+        email=email,
+        birthdate=birthdate,
+        height=height
+    )
+
+    return user
