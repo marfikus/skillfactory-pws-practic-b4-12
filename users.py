@@ -50,7 +50,6 @@ def request_user_data():
 
         return True
 
-
     first_name = input("Your first name: ")
     last_name = input("Your last name: ")
     gender = input("Your gender: ")
@@ -62,10 +61,7 @@ def request_user_data():
     birthdate = input("Your birthdate(dd.mm.year): ")
     height = input("Your height: ")
 
-    # user_id = str(uuid.uuid4())
-
     user = User(
-        # id=user_id,
         first_name=first_name,
         last_name=last_name,
         gender=gender,
@@ -75,3 +71,15 @@ def request_user_data():
     )
 
     return user
+
+def main():
+    session = connect_db()
+
+    user = request_user_data()
+    session.add(user)
+
+    session.commit()
+    print("User added")
+
+if __name__ == "__main__":
+    main()
