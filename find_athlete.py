@@ -56,26 +56,38 @@ def main():
 
     # print(user.first_name)
 
-    # ищем точное совпадение роста:
+    # Ищем точное совпадение роста:
     athlete = session.query(Athelete).filter(Athelete.height == user.height).first()
     if not athlete is None:
         print(athlete.name)
         return
 
+    # Если не нашли, то будем перебирать все записи и искать ближайшее значение.
+    # Способ конечно стрёмный (для больших объёмов), но в общем рабочий
     athletes = session.query(Athelete).all()
     # print(len(athletes))
     # print(athletes[0].height)
     print("user.height:", user.height)
+    # Считаем разницу (по модулю) между ростом юзера и первого атлета.
+    # Это будет начальное минимальное значение.
     min_dif_heights = abs(user.height - athletes[0].height)
+    # И атлета запоминаем:
+    athlete_nearby_height = athletes[0]
     # print(min_dif_heights)
+    # 
     for athlete in athletes:
+        # У некоторых атлетов не указан рост, пропускаем их:
         if athlete.height is None:
             continue
+        # Также считаем разницу и если она меньше текущей минимальной,
+        # то переписываем её и атлета у которого она обнаружена:
         dif_heights = abs(user.height - athlete.height)
         if dif_heights < min_dif_heights:
             min_dif_heights = dif_heights
+            athlete_nearby_height = athlete
 
     print("min_dif_heights:", min_dif_heights)
+    print("athlete_nearby_height:", athlete_nearby_height.sport)
 
 
 if __name__ == "__main__":
