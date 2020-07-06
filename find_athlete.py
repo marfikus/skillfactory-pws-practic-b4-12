@@ -44,22 +44,15 @@ def connect_db():
     session = Sessions()
     return session
 
-def main():
-    session = connect_db()
-
-    user_id = input("Enter user id: ")
-
-    user = session.query(User).filter(User.id == user_id).first()
-    if user is None:
-        print("No user with id:", user_id)
-        return
-
-    # print(user.first_name)
+def find_athlete_nearby_height(session, user):
+    # Флаг для дальнейшего прерывания алгоритма поиска:
+    # athlete_nearby_height_is_found = False
 
     # Ищем точное совпадение роста:
     athlete = session.query(Athelete).filter(Athelete.height == user.height).first()
     if not athlete is None:
         print(athlete.name)
+        # athlete_nearby_height_is_found = True
         return
 
     # Если не нашли, то будем перебирать все записи и искать ближайшее значение.
@@ -87,7 +80,19 @@ def main():
             athlete_nearby_height = athlete
 
     print("min_dif_heights:", min_dif_heights)
-    print("athlete_nearby_height:", athlete_nearby_height.sport)
+    print("athlete_nearby_height:", athlete_nearby_height.sport)    
+
+def main():
+    session = connect_db()
+
+    user_id = input("Enter user id: ")
+
+    user = session.query(User).filter(User.id == user_id).first()
+    if user is None:
+        print("No user with id:", user_id)
+        return
+
+    find_athlete_nearby_height(session, user)
 
 
 if __name__ == "__main__":
