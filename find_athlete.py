@@ -43,3 +43,19 @@ def connect_db():
     # создаём сессию
     session = Sessions()
     return session
+
+def main():
+    session = connect_db()
+
+    user_id = input("Enter user id: ")
+
+    user = session.query(User).filter(User.id == user_id).first()
+    if user is None:
+        print("No user with id:", user_id)
+        return
+
+    print(user.first_name)
+    
+
+if __name__ == "__main__":
+    main()
