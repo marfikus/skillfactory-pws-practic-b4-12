@@ -54,8 +54,29 @@ def main():
         print("No user with id:", user_id)
         return
 
-    print(user.first_name)
-    
+    # print(user.first_name)
+
+    # ищем точное совпадение роста:
+    athlete = session.query(Athelete).filter(Athelete.height == user.height).first()
+    if not athlete is None:
+        print(athlete.name)
+        return
+
+    athletes = session.query(Athelete).all()
+    # print(len(athletes))
+    # print(athletes[0].height)
+    print("user.height:", user.height)
+    min_dif_heights = abs(user.height - athletes[0].height)
+    # print(min_dif_heights)
+    for athlete in athletes:
+        if athlete.height is None:
+            continue
+        dif_heights = abs(user.height - athlete.height)
+        if dif_heights < min_dif_heights:
+            min_dif_heights = dif_heights
+
+    print("min_dif_heights:", min_dif_heights)
+
 
 if __name__ == "__main__":
     main()
