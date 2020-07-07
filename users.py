@@ -2,6 +2,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import datetime as dt
 
 DB_PATH = "sqlite:///sochi_athletes.sqlite3"
 
@@ -52,16 +53,24 @@ def request_user_data():
 
     def valid_birthdate(birthdate):
         # делим полученную строку, должно получиться 3 куска:
-        birthdate_splitted = birthdate.split("-")
-        if len(birthdate_splitted) != 3:
-            return False
+        # birthdate_splitted = birthdate.split("-")
+        # if len(birthdate_splitted) != 3:
+            # return False
 
         # проверяем куски: числа ли это?
-        for chunk in birthdate_splitted:
-            try:
-                number = int(chunk)
-            except ValueError:
-                return False
+        # for chunk in birthdate_splitted:
+            # try:
+                # number = int(chunk)
+            # except ValueError:
+                # return False
+		
+		# Пробуем преобразовать строку в формат даты,
+		# если она некорректная, то отвергаем её.
+		# (Таким образом, предыдущие проверки уже не нужны)
+		try:
+			dt.datetime.strptime(birthdate, "%Y-%m-%d")
+		except ValueError:
+			return False
 
         return True 
 
@@ -73,9 +82,9 @@ def request_user_data():
     while not valid_email(email):
         email = input("Incorrect email! Your email: ")
 
-    birthdate = input("Your birthdate(dd-mm-year): ")
+    birthdate = input("Your birthdate(format: year-mm-dd): ")
     while not valid_birthdate(birthdate):
-        birthdate = input("Incorrect birthdate! Your birthdate(dd-mm-year): ")
+        birthdate = input("Incorrect birthdate! Your birthdate(format: year-mm-dd): ")
 
     # проверка ввода роста:
     while True:
