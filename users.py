@@ -63,14 +63,14 @@ def request_user_data():
                 # number = int(chunk)
             # except ValueError:
                 # return False
-		
-		# Пробуем преобразовать строку в формат даты,
-		# если она некорректная, то отвергаем её.
-		# (Таким образом, предыдущие проверки уже не нужны)
-		try:
-			dt.datetime.strptime(birthdate, "%Y-%m-%d")
-		except ValueError:
-			return False
+        
+        # Пробуем преобразовать строку в формат даты,
+        # если она некорректная, то отвергаем её.
+        # (Таким образом, предыдущие проверки уже не нужны)
+        try:
+            dt.datetime.strptime(birthdate, "%Y-%m-%d")
+        except ValueError:
+            return False
 
         return True 
 
