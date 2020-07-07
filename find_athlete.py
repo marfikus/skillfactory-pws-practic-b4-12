@@ -75,7 +75,7 @@ def find_nearby_athletes(session, user):
         # Аналогично поступаем и с датой рождения, 
         # предварительно преобразовав её в удобный для манипуляций формат
         user_birthdate = dt.datetime.strptime(user.birthdate, "%Y-%m-%d")
-        min_dif_birthdates = user_birthdate
+        min_dif_birthdates = dt.timedelta.max
         athlete_nearby_birthdate = None
             
         for athlete in athletes:
