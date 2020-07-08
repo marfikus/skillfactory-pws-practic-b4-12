@@ -143,23 +143,28 @@ def find_nearby_athletes(session, user):
 def main():
     session = connect_db()
 
+    # Запрашиваем ид юзера, ищем его в базе
     user_id = input("Enter user id: ") # проверка ввода 
     user = session.query(User).filter(User.id == user_id).first()
+    # Если нет такого, сообщаем и выходим
     if user is None:
         print("No user with id:", user_id)
         return
     
+    # Иначе выводим данные юзера
     print("Selected user:")
     print_user(user)
     
+    # Ищем в базе ближайших атлетов
     result = find_nearby_athletes(session, user)
+    # Если найден ближайший по росту, то выводим его данные
     if not result["athlete_nearby_height"] is None:
         print("Nearest athlete by height:")
         print_athlete(result["athlete_nearby_height"])
         print(f"Heights difference: {result['dif_heights']}\n")
     else:
         print("No nearest athlete by height")
-
+    # Если найден ближайший по дате рождения то выводим его данные
     if not result["athlete_nearby_birthdate"] is None:
         print("Nearest athlete by birthdate:")
         print_athlete(result["athlete_nearby_birthdate"])
