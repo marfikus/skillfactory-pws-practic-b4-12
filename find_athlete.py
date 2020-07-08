@@ -47,7 +47,7 @@ def connect_db():
 
 def print_user(user):
     output = (
-        f" ID: {user.id}\n"
+        f" Id: {user.id}\n"
         f" Name: {user.first_name} {user.last_name}\n"
         f" Gender: {user.gender}\n"
         f" Email: {user.email}\n" 
@@ -58,7 +58,7 @@ def print_user(user):
     
 def print_athlete(athlete):
     output = (
-        f" ID: {athlete.id}\n"
+        f" Id: {athlete.id}\n"
         f" Name: {athlete.name}\n"
         f" Age: {athlete.age}\n"
         f" Birthdate: {athlete.birthdate}\n"
@@ -161,7 +161,7 @@ def main():
     session = connect_db()
 
     # Запрашиваем ид юзера, ищем его в базе
-    user_id = input("Enter user id: ") # проверка ввода 
+    user_id = input("Enter user id: ")
     user = session.query(User).filter(User.id == user_id).first()
     # Если нет такого, сообщаем и выходим
     if user is None:
@@ -169,7 +169,7 @@ def main():
         return
     
     # Иначе выводим данные юзера
-    print("Selected user:")
+    print("\nSelected user:")
     print_user(user)
     
     # Ищем в базе ближайших атлетов
