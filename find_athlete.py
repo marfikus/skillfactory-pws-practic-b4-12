@@ -45,46 +45,65 @@ def connect_db():
     session = Sessions()
     return session
 
+# попробовать в цикле вывести поля
+# или хотя бы многострочный вид сделать
 def print_user(user):
-    output = f" ID: {user.id}\n Name: {user.first_name} {user.last_name}\n Gender: {user.gender}\n Email: {user.email}\n Birthdate: {user.birthdate}\n Height: {user.height}\n ==========="
+    output = f" ID: {user.id}\n Name: {user.first_name} {user.last_name}\n Gender: {user.gender}\n Email: {user.email}\n Birthdate: {user.birthdate}\n Height: {user.height}\n"
     print(output)
     
 def print_athlete(athlete):
-    output = f" ID: {athlete.id}\n Name: {athlete.name}\n Age: {athlete.age}\n Birthdate: {athlete.birthdate}\n Gender: {athlete.gender}\n Height: {athlete.height}\n Weight: {athlete.weight}\n Gold_medals: {athlete.gold_medals}\n Silver_medals: {athlete.silver_medals}\n Bronze_medals: {athlete.bronze_medals}\n Total_medals: {athlete.total_medals}\n Sport: {athlete.sport}\n Country: {athlete.country}\n ==========="
+    output = f" ID: {athlete.id}\n Name: {athlete.name}\n Age: {athlete.age}\n Birthdate: {athlete.birthdate}\n Gender: {athlete.gender}\n Height: {athlete.height}\n Weight: {athlete.weight}\n Gold_medals: {athlete.gold_medals}\n Silver_medals: {athlete.silver_medals}\n Bronze_medals: {athlete.bronze_medals}\n Total_medals: {athlete.total_medals}\n Sport: {athlete.sport}\n Country: {athlete.country}\n"
     print(output)
-	
+    
 def find_nearby_athletes(session, user):
     # Флаги для дальнейшего управления алгоритмом поиска:
     athlete_nearby_height_is_found = False
     athlete_nearby_birthdate_is_found = False
 
+    # Наименьшая разница в росте юзера и атлета
+    # Будет нужна при поиске в цикле, а пока устанавливаем в 0
+    min_dif_heights = 0
+
+    # Наименьшая разница в датах рождения юзера и атлета
+    # Также для поиска, а пока в 0
+    min_dif_birthdates = 0
+
     # Ищем точное совпадение роста:
     athlete_nearby_height = session.query(Athelete).filter(Athelete.height == user.height).first()
-    if not athlete_nearby_height is None: # !!! проверить, действительно ли там None?
-        # print_athlete(athlete)
+    # Если нашли такого атлета:
+    if not athlete_nearby_height is None:
+        # Отмечаем это
         athlete_nearby_height_is_found = True
         
     # Ищем точное совпадение даты рождения:
     athlete_nearby_birthdate = session.query(Athelete).filter(Athelete.birthdate == user.birthdate).first()
+    # Если нашли такого атлета:
     if not athlete_nearby_birthdate is None:
-        # print_athlete(athlete)
+        # Отмечаем это
         athlete_nearby_birthdate_is_found = True
         
-    # Если не нашли, то будем перебирать все записи и искать ближайшее значение.
+    # Если не нашли атлета по росту или по дате рождения, 
+    # то будем перебирать все записи и искать ближайшее значение.
     # Способ конечно стрёмный (для больших объёмов), но в общем рабочий 
     if not athlete_nearby_height_is_found or not athlete_nearby_birthdate_is_found:
         athletes = session.query(Athelete).all()
-        # Устанавливаем начальное минимальное значение разницы 
-        # между ростом юзера и первого атлета.
-        # Пока это просто рост юзера
-        min_dif_heights = user.height
-        # athlete_nearby_height = None
+
+        # Если не нашли атлета по росту
+        if not athlete_nearby_height_is_found:
+            # Устанавливаем наименьшей разницей рост юзера
+            # Это только для начала поиска, а далее оно будет вычисляться.
+            # Причём значение должно быть гарантированно больше того, 
+            # которое будет вычислено далее 
+            # (разумеется, при соблюдении одного масштаба в росте :) )
+            min_dif_heights = user.height
         
-        # Аналогично поступаем и с датой рождения, 
-        # предварительно преобразовав её в удобный для манипуляций формат
-        user_birthdate = dt.datetime.strptime(user.birthdate, "%Y-%m-%d")
-        min_dif_birthdates = dt.timedelta.max
-        # athlete_nearby_birthdate = None
+        # Если не нашли атлета по дате рождения
+        if not athlete_nearby_birthdate_is_found:
+            # Устанавливаем наименьшей разницей максимальное значение промежутка времени.
+            # Это тоже только для начала поиска, потом пересчитается...
+            min_dif_birthdates = dt.timedelta.max
+            # Преобразуем дату рождения юзера в удобный для манипуляций формат
+            user_birthdate = dt.datetime.strptime(user.birthdate, "%Y-%m-%d")
             
         for athlete in athletes:
             if not athlete_nearby_height_is_found:
@@ -110,19 +129,21 @@ def find_nearby_athletes(session, user):
                     if dif_birthdates < min_dif_birthdates:
                         min_dif_birthdates = dif_birthdates
                         athlete_nearby_birthdate = athlete
-                        
-        result = {
-            "min_dif_heights": min_dif_heights,
-            "athlete_nearby_height": athlete_nearby_height,
-            "min_dif_birthdates": min_dif_birthdates,
-            "athlete_nearby_birthdate": athlete_nearby_birthdate
-        }
-        return result
+
+    # Проверить вариант, когда не нашел атлета
+
+    result = {
+        "athlete_nearby_height": athlete_nearby_height,
+        "dif_heights": min_dif_heights,
+        "athlete_nearby_birthdate": athlete_nearby_birthdate,
+        "dif_birthdates": min_dif_birthdates
+    }
+    return result
 
 def main():
     session = connect_db()
 
-    user_id = input("Enter user id: ")
+    user_id = input("Enter user id: ") # проверка ввода 
     user = session.query(User).filter(User.id == user_id).first()
     if user is None:
         print("No user with id:", user_id)
@@ -133,18 +154,18 @@ def main():
     
     result = find_nearby_athletes(session, user)
     if not result["athlete_nearby_height"] is None:
-        print("min_dif_heights:", result["min_dif_heights"])
-        print("Nearby athlete by height:")
+        print("Nearest athlete by height:")
         print_athlete(result["athlete_nearby_height"])
+        print(f"Heights difference: {result['dif_heights']}\n")
     else:
-        print("No nearby athlete by height")
+        print("No nearest athlete by height")
 
     if not result["athlete_nearby_birthdate"] is None:
-        print("min_dif_birthdates:", result["min_dif_birthdates"])
-        print("Nearby athlete by birthdate:")
+        print("Nearest athlete by birthdate:")
         print_athlete(result["athlete_nearby_birthdate"])
+        print(f"Birthdates difference: {result['dif_birthdates']}\n")
     else:
-        print("No nearby athlete by birthdate")
+        print("No nearest athlete by birthdate")
 
 if __name__ == "__main__":
     main()
