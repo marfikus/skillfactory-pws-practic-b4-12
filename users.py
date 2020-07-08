@@ -74,22 +74,22 @@ def request_user_data():
 
         return True 
 
-    first_name = input("Your first name: ")
-    last_name = input("Your last name: ")
-    gender = input("Your gender: ")
+    first_name = input("Enter first name: ")
+    last_name = input("Enter last name: ")
+    gender = input("Enter gender: ")
 
-    email = input("Your email: ")
+    email = input("Enter email: ")
     while not valid_email(email):
-        email = input("Incorrect email! Your email: ")
+        email = input("Incorrect email! Enter email: ")
 
-    birthdate = input("Your birthdate(format: year-mm-dd): ")
+    birthdate = input("Enter birthdate(format: year-mm-dd): ")
     while not valid_birthdate(birthdate):
-        birthdate = input("Incorrect birthdate! Your birthdate(format: year-mm-dd): ")
+        birthdate = input("Incorrect birthdate! Enter birthdate(format: year-mm-dd): ")
 
     # проверка ввода роста:
     while True:
         try:
-            height = float(input("Your height: "))
+            height = float(input("Enter height: "))
             break
         except ValueError as er:
             print("Incorrect value!", er)
