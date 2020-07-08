@@ -45,14 +45,33 @@ def connect_db():
     session = Sessions()
     return session
 
-# попробовать в цикле вывести поля
-# или хотя бы многострочный вид сделать
 def print_user(user):
-    output = f" ID: {user.id}\n Name: {user.first_name} {user.last_name}\n Gender: {user.gender}\n Email: {user.email}\n Birthdate: {user.birthdate}\n Height: {user.height}\n"
+    output = (
+        f" ID: {user.id}\n"
+        f" Name: {user.first_name} {user.last_name}\n"
+        f" Gender: {user.gender}\n"
+        f" Email: {user.email}\n" 
+        f" Birthdate: {user.birthdate}\n"
+        f" Height: {user.height}\n"
+    )
     print(output)
     
 def print_athlete(athlete):
-    output = f" ID: {athlete.id}\n Name: {athlete.name}\n Age: {athlete.age}\n Birthdate: {athlete.birthdate}\n Gender: {athlete.gender}\n Height: {athlete.height}\n Weight: {athlete.weight}\n Gold_medals: {athlete.gold_medals}\n Silver_medals: {athlete.silver_medals}\n Bronze_medals: {athlete.bronze_medals}\n Total_medals: {athlete.total_medals}\n Sport: {athlete.sport}\n Country: {athlete.country}\n"
+    output = (
+        f" ID: {athlete.id}\n"
+        f" Name: {athlete.name}\n"
+        f" Age: {athlete.age}\n"
+        f" Birthdate: {athlete.birthdate}\n"
+        f" Gender: {athlete.gender}\n"
+        f" Height: {athlete.height}\n"
+        f" Weight: {athlete.weight}\n"
+        f" Gold_medals: {athlete.gold_medals}\n"
+        f" Silver_medals: {athlete.silver_medals}\n"
+        f" Bronze_medals: {athlete.bronze_medals}\n"
+        f" Total_medals: {athlete.total_medals}\n"
+        f" Sport: {athlete.sport}\n"
+        f" Country: {athlete.country}\n"
+    ) 
     print(output)
     
 def find_nearby_athletes(session, user):
@@ -130,8 +149,6 @@ def find_nearby_athletes(session, user):
                         min_dif_birthdates = dif_birthdates
                         athlete_nearby_birthdate = athlete
 
-    # Проверить вариант, когда не нашел атлета
-
     result = {
         "athlete_nearby_height": athlete_nearby_height,
         "dif_heights": min_dif_heights,
@@ -163,14 +180,14 @@ def main():
         print_athlete(result["athlete_nearby_height"])
         print(f"Heights difference: {result['dif_heights']}\n")
     else:
-        print("No nearest athlete by height")
+        print("No nearest athlete by height\n")
     # Если найден ближайший по дате рождения то выводим его данные
     if not result["athlete_nearby_birthdate"] is None:
         print("Nearest athlete by birthdate:")
         print_athlete(result["athlete_nearby_birthdate"])
         print(f"Birthdates difference: {result['dif_birthdates']}\n")
     else:
-        print("No nearest athlete by birthdate")
+        print("No nearest athlete by birthdate\n")
 
 if __name__ == "__main__":
     main()
