@@ -108,19 +108,22 @@ def find_nearby_athletes(session, user):
         athletes = session.query(Athelete).all()
 
         # Если не нашли атлета по росту
-        if not athlete_nearby_height_is_found:
+        # if not athlete_nearby_height_is_found:
             # Устанавливаем наименьшей разницей рост юзера
             # Это только для начала поиска, а далее оно будет вычисляться.
             # Причём значение должно быть гарантированно больше того, 
             # которое будет вычислено далее 
             # (разумеется, при соблюдении одного масштаба в росте :) )
-            min_dif_heights = user.height
+            # min_dif_heights = user.height
+            # Сейчас отказался от этого, а просто дополнил условие ниже, проверяя значение на == 0
         
         # Если не нашли атлета по дате рождения
         if not athlete_nearby_birthdate_is_found:
             # Устанавливаем наименьшей разницей максимальное значение промежутка времени.
             # Это тоже только для начала поиска, потом пересчитается...
-            min_dif_birthdates = dt.timedelta.max
+            # min_dif_birthdates = dt.timedelta.max
+            # Сейчас отказался от этого, а просто дополнил условие ниже, проверяя значение на == 0
+
             # Преобразуем дату рождения юзера в удобный для манипуляций формат
             user_birthdate = dt.datetime.strptime(user.birthdate, "%Y-%m-%d")
             
@@ -130,9 +133,10 @@ def find_nearby_athletes(session, user):
                 if not athlete.height is None:
                     # Считаем разницу (по модулю) между ростом юзера и атлета.
                     dif_heights = abs(user.height - athlete.height)
-                    # Если она меньше текущей минимальной,
-                    # то переписываем её и атлета у которого она обнаружена:
-                    if dif_heights < min_dif_heights:
+                    # Если текущая минимальная разница == 0 (в самом начале)
+                    # или если вычисленная меньше текущей минимальной
+                    # то фиксируем новую минимальную и атлета у которого она обнаружена:
+                    if (min_dif_heights == 0) or (dif_heights < min_dif_heights):
                         min_dif_heights = dif_heights
                         athlete_nearby_height = athlete
 
@@ -141,11 +145,10 @@ def find_nearby_athletes(session, user):
                 if not athlete.birthdate is None:
                     # Приводим дату рождения атлета к удобному для манипуляций виду:
                     athlete_birthdate = dt.datetime.strptime(athlete.birthdate, "%Y-%m-%d")
-                    # Аналогично считаем разницу (по модулю) в датах рождения.
-                    # Если она меньше текущей минимальной,
-                    # то переписываем её и атлета у которого она обнаружена:
+                    # Аналогично считаем разницу (по модулю) в датах рождения
+                    # и сравниваем также, как в случае с ростом
                     dif_birthdates = abs(user_birthdate - athlete_birthdate)
-                    if dif_birthdates < min_dif_birthdates:
+                    if (min_dif_birthdates == 0) or (dif_birthdates < min_dif_birthdates):
                         min_dif_birthdates = dif_birthdates
                         athlete_nearby_birthdate = athlete
 
